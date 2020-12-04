@@ -3,6 +3,7 @@ package mastercloud.jh.books.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import mastercloud.jh.books.dto.BookDto;
 import mastercloud.jh.books.dto.BookReducedDto;
+import mastercloud.jh.books.exception.NotFoundException;
 import mastercloud.jh.books.model.Book;
 import mastercloud.jh.books.service.BookService;
 import mastercloud.jh.books.dto.BookCreationDto;
@@ -39,7 +40,23 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto getBook(Long id) {
-        return null;
+        log.info("Getting book with id: {}", id);
+
+        if (this.books.containsKey(id)){
+            Book bookFound =  this.books.get(id);
+            log.info("Book found with was:{}", bookFound);
+            return  BookDto.builder()
+                    .id(bookFound.getId())
+                    .author(bookFound.getAuthor())
+                    .publishingHouse(bookFound.getPublishingHouse())
+                    .publishYear(bookFound.getPublishYear())
+                    .summary(bookFound.getSummary())
+                    .title(bookFound.getTitle())
+                    .build();
+        } else {
+            log.info("No user with id: {} have been found", id);
+            throw new NotFoundException("Book with id: " + id + " not found");
+        }
     }
 
     @Override
