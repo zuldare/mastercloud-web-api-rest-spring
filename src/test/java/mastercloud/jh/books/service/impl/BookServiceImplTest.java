@@ -1,5 +1,6 @@
 package mastercloud.jh.books.service.impl;
 
+import mastercloud.jh.books.dto.BookCreationDto;
 import mastercloud.jh.books.dto.BookDto;
 import mastercloud.jh.books.exception.NotFoundException;
 import mastercloud.jh.books.model.Book;
@@ -60,6 +61,28 @@ class BookServiceImplTest {
         assertThat(bookDto.getTitle(), is(testingBook.getTitle()));
     }
 
+    @Test
+    public void createBook(){
+        this.bookService = this.bookServiceWithInitializedValues();
+
+        assertThat(this.bookService.getBooks().size(), is(1));
+
+        for (int i=1; i<=2; i++){
+            Long createdBookId = this.bookService.createBook(BookCreationDto.builder()
+                    .title(UML_DISTILLED_TITLE)
+                    .author(MARTIN_FOWLER_AUTHOR)
+                    .publishingHouse(ADDISON_PUBLISHHOUSE)
+                    .publishYear(2003)
+                    .summary(UML_SUMMARY)
+                    .build());
+
+            assertThat(createdBookId, is(Long.valueOf(i)));
+            assertThat(this.bookService.getBooks().size(), is(i));
+        }
+
+
+    }
+
     private BookService bookServiceWithInitializedValues() {
         ConcurrentHashMap<Long, Book> map = new ConcurrentHashMap<>();
         map.put(1L, this.bookBuilder());
@@ -76,12 +99,4 @@ class BookServiceImplTest {
                 .summary(UML_SUMMARY)
                 .build();
     }
-
-//    @Test
-//    void getBook() {
-//    }
-//
-//    @Test
-//    void createBook() {
-//    }
 }

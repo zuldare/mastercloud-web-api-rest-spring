@@ -70,6 +70,18 @@ public class BookServiceImplForTesting implements BookService {
 
     @Override
     public Long createBook(BookCreationDto bookCreationDto) {
-        return null;
+        log.info("Create new book: {}", bookCreationDto);
+        Long next = nextId.incrementAndGet();
+
+        this.books.computeIfAbsent(next, key -> Book.builder()
+                .title(bookCreationDto.getTitle())
+                .summary(bookCreationDto.getSummary())
+                .publishYear(bookCreationDto.getPublishYear())
+                .publishingHouse(bookCreationDto.getPublishingHouse())
+                .author(bookCreationDto.getAuthor())
+                .id(key)
+                .build());
+
+        return next;
     }
 }
