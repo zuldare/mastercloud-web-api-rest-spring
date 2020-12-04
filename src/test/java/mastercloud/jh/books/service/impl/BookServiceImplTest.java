@@ -1,5 +1,6 @@
 package mastercloud.jh.books.service.impl;
 
+import mastercloud.jh.books.dto.BookDto;
 import mastercloud.jh.books.exception.NotFoundException;
 import mastercloud.jh.books.model.Book;
 import mastercloud.jh.books.service.BookService;
@@ -43,6 +44,20 @@ class BookServiceImplTest {
     @Test
     public void getBookById_WhenNotExist_ShouldReturnNotFoundException(){
         assertThrows(NotFoundException.class, () -> this.bookService.getBook(1L));
+    }
+
+    @Test
+    public void getBookById_WhenExists_ShouldReturnFullDataOfTheBook(){
+        this.bookService = this.bookServiceWithInitializedValues();
+        BookDto bookDto = this.bookService.getBook(1L);
+        assertNotNull(bookDto);
+        Book testingBook = this.bookBuilder();
+        assertThat(bookDto.getId(), is(testingBook.getId()));
+        assertThat(bookDto.getAuthor(), is(testingBook.getAuthor()));
+        assertThat(bookDto.getPublishYear(), is(testingBook.getPublishYear()));
+        assertThat(bookDto.getPublishingHouse(), is(testingBook.getPublishingHouse()));
+        assertThat(bookDto.getSummary(), is(testingBook.getSummary()));
+        assertThat(bookDto.getTitle(), is(testingBook.getTitle()));
     }
 
     private BookService bookServiceWithInitializedValues() {
