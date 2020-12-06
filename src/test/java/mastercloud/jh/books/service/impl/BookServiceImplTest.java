@@ -2,14 +2,16 @@ package mastercloud.jh.books.service.impl;
 
 import mastercloud.jh.books.dto.BookCreationDto;
 import mastercloud.jh.books.dto.BookDto;
+import mastercloud.jh.books.dto.BookReducedDto;
 import mastercloud.jh.books.exception.NotFoundException;
 import mastercloud.jh.books.model.Book;
+import mastercloud.jh.books.repository.BookRepository;
 import mastercloud.jh.books.service.BookService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -18,38 +20,35 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 class BookServiceImplTest {
-    private static final String UML_SUMMARY = "Learn to use UML";
+    private static final String UML_SUMMARY = "Learn how to use UML";
     private static final String ADDISON_PUBLISHHOUSE = "Addison";
     private static final String MARTIN_FOWLER_AUTHOR = "Martin Fowler";
     private static final String UML_DISTILLED_TITLE = "UML Distilled";
+    private static final String DESIGN_PATTERNS = "Design Patterns";
     private BookService bookService;
 
     @BeforeEach
-    void setUp() {
-        this.bookService = new BookServiceImpl(new ModelMapper());
+    private void setUp(){
+        this.bookService = new BookServiceImpl(new BookRepository(), new ModelMapper());
     }
 
     @Test
-    public void getBooks_WhenNoBooksAvailable_ShouldReturnEmptyList() {
-        assertThat(this.bookService.getBooks().size(), is(0));
-    }
-
-    @Test
-    public void getBooks_WhenBooksAvailable_ShouldReturnOnlyIdAndTitle(){
-        this.bookService = this.bookServiceWithInitializedValues();
-        assertThat(this.bookService.getBooks().size(), is(1));
+     void getBooks_WhenBooksAvailable_ShouldReturnOnlyIdAndTitle(){
+        List<BookReducedDto> result = this.bookService.getBooks();
+        assertThat(this.bookService.getBooks().size(), is(2));
         assertThat(this.bookService.getBooks().get(0).getId(), is(1L));
         assertThat(this.bookService.getBooks().get(0).getTitle(), is(UML_DISTILLED_TITLE));
+        assertThat(this.bookService.getBooks().get(1).getId(), is(2L));
+        assertThat(this.bookService.getBooks().get(1).getTitle(), is(DESIGN_PATTERNS));
     }
 
     @Test
-    public void getBookById_WhenNotExist_ShouldReturnNotFoundException(){
-        assertThrows(NotFoundException.class, () -> this.bookService.getBook(1L));
+    void getBookById_WhenNotExist_ShouldReturnNotFoundException(){
+        assertThrows(NotFoundException.class, () -> this.bookService.getBook(5L));
     }
 
     @Test
-    public void getBookById_WhenExists_ShouldReturnFullDataOfTheBook(){
-        this.bookService = this.bookServiceWithInitializedValues();
+    void getBookById_WhenExists_ShouldReturnFullDataOfTheBook(){
         BookDto bookDto = this.bookService.getBook(1L);
         assertNotNull(bookDto);
         Book testingBook = this.bookBuilder();
@@ -62,32 +61,19 @@ class BookServiceImplTest {
     }
 
     @Test
-    public void createBook(){
-        this.bookService = this.bookServiceWithInitializedValues();
+    void createBook(){
+        BookDto bookDto = this.bookService.createBook(BookCreationDto.builder()
+                .title("Fake Title")
+                .author("Fake Author")
+                .publishingHouse("Fake publish house")
+                .publishYear(2003)
+                .summary("Fake Summary")
+                .build());
 
-        assertThat(this.bookService.getBooks().size(), is(1));
-
-        for (int i=1; i<=2; i++){
-            BookDto bookDto = this.bookService.createBook(BookCreationDto.builder()
-                    .title(UML_DISTILLED_TITLE)
-                    .author(MARTIN_FOWLER_AUTHOR)
-                    .publishingHouse(ADDISON_PUBLISHHOUSE)
-                    .publishYear(2003)
-                    .summary(UML_SUMMARY)
-                    .build());
-
-            assertThat(bookDto.getId(), is(Long.valueOf(i)));
-            assertThat(this.bookService.getBooks().size(), is(i));
-        }
-
-
+        assertThat(bookDto.getId(), is(Long.valueOf(3)));
+        assertThat(this.bookService.getBooks().size(), is(3));
     }
 
-    private BookService bookServiceWithInitializedValues() {
-        ConcurrentHashMap<Long, Book> map = new ConcurrentHashMap<>();
-        map.put(1L, this.bookBuilder());
-        return new BookServiceImplForTesting(map);
-    }
 
     private Book bookBuilder(){
         return Book.builder()

@@ -1,44 +1,43 @@
 package mastercloud.jh.books.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import mastercloud.jh.books.dto.BookCreationDto;
 import mastercloud.jh.books.dto.BookDto;
 import mastercloud.jh.books.dto.BookReducedDto;
 import mastercloud.jh.books.exception.NotFoundException;
 import mastercloud.jh.books.model.Book;
+import mastercloud.jh.books.repository.BookRepository;
 import mastercloud.jh.books.service.BookService;
-import mastercloud.jh.books.dto.BookCreationDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
 
 @Service
 @Slf4j
 public class BookServiceImpl implements BookService {
 
-    private ConcurrentHashMap<Long, Book> books = new ConcurrentHashMap<>();
-    private AtomicLong nextId = new AtomicLong();
-
-
+    private final BookRepository bookRepository;
     private final ModelMapper modelMapper;
 
-    public BookServiceImpl(ModelMapper modelMapper) {
+    public BookServiceImpl(BookRepository bookRepository, ModelMapper modelMapper) {
+        this.bookRepository = bookRepository;
         this.modelMapper = modelMapper;
     }
 
     @Override
     public List<BookReducedDto> getBooks() {
         log.info("Getting all books");
-        List<BookReducedDto> booksReduced = collectBooksReduced();
+        List<BookReducedDto> booksReduced = this.collectBooksReduced();
         log.info("Obtained the following books: {}", booksReduced);
         return booksReduced;
     }
 
     private List<BookReducedDto> collectBooksReduced() {
-        return books.values().stream()
+        return this.bookRepository.findAll().stream()
                 .map(book -> BookReducedDto.builder()
                         .id(book.getId())
                         .title(book.getTitle())
@@ -49,30 +48,24 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto getBook(Long id) {
         log.info("Getting book with id: {}", id);
+        Book book = this.getCheckedBook(id);
+        log.info("Book found with was:{}", book);
+        return modelMapper.map(book, BookDto.class);
+    }
 
-        if (this.books.containsKey(id)){
-            Book bookFound =  this.books.get(id);
-            log.info("Book found with was:{}", bookFound);
-            return  modelMapper.map(bookFound, BookDto.class);
-        } else {
+    private Book getCheckedBook(Long id) {
+        Book book = this.bookRepository.find(id);
+        if (isNull(book)) {
             log.info("No user with id: {} have been found", id);
             throw new NotFoundException("Book with id: " + id + " not found");
         }
+        return book;
     }
 
     @Override
     public BookDto createBook(BookCreationDto bookCreationDto) {
         log.info("Create new book: {}", bookCreationDto);
-        Long next = nextId.incrementAndGet();
-
-        this.books.computeIfAbsent(next, key -> Book.builder()
-                .title(bookCreationDto.getTitle())
-                .summary(bookCreationDto.getSummary())
-                .publishYear(bookCreationDto.getPublishYear())
-                .publishingHouse(bookCreationDto.getPublishingHouse())
-                .author(bookCreationDto.getAuthor())
-                .id(key)
-                .build());
-        return modelMapper.map(books.get(next), BookDto.class);
+        Book newlyCreatedBook = this.bookRepository.save(modelMapper.map(bookCreationDto, Book.class));
+        return modelMapper.map(newlyCreatedBook, BookDto.class);
     }
 }

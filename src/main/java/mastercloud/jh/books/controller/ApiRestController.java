@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import mastercloud.jh.books.dto.*;
 import mastercloud.jh.books.exception.NotFoundException;
-import mastercloud.jh.books.model.Comment;
 import mastercloud.jh.books.service.BookService;
 import mastercloud.jh.books.service.CommentService;
 import org.springframework.http.HttpStatus;
@@ -23,13 +22,13 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 
 @RestController
 @RequestMapping("/api")
-public class ApiController {
+public class ApiRestController {
 
     private static final String APPLICATION_JSON = "application/json";
     private final BookService bookService;
     private final CommentService commentService;
 
-    public ApiController(BookService bookService, CommentService commentService) {
+    public ApiRestController(BookService bookService, CommentService commentService) {
         this.bookService = bookService;
         this.commentService = commentService;
     }
