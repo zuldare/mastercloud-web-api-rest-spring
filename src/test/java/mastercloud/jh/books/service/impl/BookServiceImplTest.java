@@ -7,8 +7,8 @@ import mastercloud.jh.books.model.Book;
 import mastercloud.jh.books.service.BookService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
 
-import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -26,7 +26,7 @@ class BookServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        this.bookService = new BookServiceImpl();
+        this.bookService = new BookServiceImpl(new ModelMapper());
     }
 
     @Test
@@ -68,7 +68,7 @@ class BookServiceImplTest {
         assertThat(this.bookService.getBooks().size(), is(1));
 
         for (int i=1; i<=2; i++){
-            Long createdBookId = this.bookService.createBook(BookCreationDto.builder()
+            BookDto bookDto = this.bookService.createBook(BookCreationDto.builder()
                     .title(UML_DISTILLED_TITLE)
                     .author(MARTIN_FOWLER_AUTHOR)
                     .publishingHouse(ADDISON_PUBLISHHOUSE)
@@ -76,7 +76,7 @@ class BookServiceImplTest {
                     .summary(UML_SUMMARY)
                     .build());
 
-            assertThat(createdBookId, is(Long.valueOf(i)));
+            assertThat(bookDto.getId(), is(Long.valueOf(i)));
             assertThat(this.bookService.getBooks().size(), is(i));
         }
 

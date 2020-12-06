@@ -28,7 +28,7 @@ public interface BookService {
     /**
      * Creates a book according to a provided information.
      * @param bookCreationDto dto containing the information in order to create the book
-     * @return the id of the newly created book
+     * @return the newly created book
      */
-    Long createBook(@Validated BookCreationDto bookCreationDto);
+    BookDto createBook(@Validated BookCreationDto bookCreationDto);
 }

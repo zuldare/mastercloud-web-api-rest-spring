@@ -7,6 +7,7 @@ import mastercloud.jh.books.exception.NotFoundException;
 import mastercloud.jh.books.model.Book;
 import mastercloud.jh.books.service.BookService;
 import mastercloud.jh.books.dto.BookCreationDto;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +21,13 @@ public class BookServiceImpl implements BookService {
 
     private ConcurrentHashMap<Long, Book> books = new ConcurrentHashMap<>();
     private AtomicLong nextId = new AtomicLong();
+
+
+    private final ModelMapper modelMapper;
+
+    public BookServiceImpl(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+    }
 
     @Override
     public List<BookReducedDto> getBooks() {
@@ -45,14 +53,7 @@ public class BookServiceImpl implements BookService {
         if (this.books.containsKey(id)){
             Book bookFound =  this.books.get(id);
             log.info("Book found with was:{}", bookFound);
-            return  BookDto.builder()
-                    .id(bookFound.getId())
-                    .author(bookFound.getAuthor())
-                    .publishingHouse(bookFound.getPublishingHouse())
-                    .publishYear(bookFound.getPublishYear())
-                    .summary(bookFound.getSummary())
-                    .title(bookFound.getTitle())
-                    .build();
+            return  modelMapper.map(bookFound, BookDto.class);
         } else {
             log.info("No user with id: {} have been found", id);
             throw new NotFoundException("Book with id: " + id + " not found");
@@ -60,7 +61,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Long createBook(BookCreationDto bookCreationDto) {
+    public BookDto createBook(BookCreationDto bookCreationDto) {
         log.info("Create new book: {}", bookCreationDto);
         Long next = nextId.incrementAndGet();
 
@@ -72,7 +73,6 @@ public class BookServiceImpl implements BookService {
                 .author(bookCreationDto.getAuthor())
                 .id(key)
                 .build());
-
-        return next;
+        return modelMapper.map(books.get(next), BookDto.class);
     }
 }

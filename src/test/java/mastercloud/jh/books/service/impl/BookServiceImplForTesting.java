@@ -7,6 +7,7 @@ import mastercloud.jh.books.dto.BookReducedDto;
 import mastercloud.jh.books.exception.NotFoundException;
 import mastercloud.jh.books.model.Book;
 import mastercloud.jh.books.service.BookService;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,11 +23,12 @@ public class BookServiceImplForTesting implements BookService {
     private ConcurrentHashMap<Long, Book> books = new ConcurrentHashMap<>();
     private AtomicLong nextId = new AtomicLong();
 
-    public BookServiceImplForTesting() {
-    }
+    private final ModelMapper modelMapper;
+
 
     public BookServiceImplForTesting(Map<Long, Book> books) {
         this.books = (ConcurrentHashMap<Long, Book>) books;
+        this.modelMapper = new ModelMapper();
     }
 
 
@@ -54,14 +56,7 @@ public class BookServiceImplForTesting implements BookService {
         if (this.books.containsKey(id)){
             Book bookFound =  this.books.get(id);
             log.info("Book found with was:{}", bookFound);
-            return  BookDto.builder()
-                    .id(bookFound.getId())
-                    .author(bookFound.getAuthor())
-                    .publishingHouse(bookFound.getPublishingHouse())
-                    .publishYear(bookFound.getPublishYear())
-                    .summary(bookFound.getSummary())
-                    .title(bookFound.getTitle())
-                    .build();
+            return  modelMapper.map(bookFound, BookDto.class);
         } else {
             log.info("No user with id: {} have been found", id);
             throw new NotFoundException("Book with id: " + id + " not found");
@@ -69,7 +64,7 @@ public class BookServiceImplForTesting implements BookService {
     }
 
     @Override
-    public Long createBook(BookCreationDto bookCreationDto) {
+    public BookDto createBook(BookCreationDto bookCreationDto) {
         log.info("Create new book: {}", bookCreationDto);
         Long next = nextId.incrementAndGet();
 
@@ -81,7 +76,6 @@ public class BookServiceImplForTesting implements BookService {
                 .author(bookCreationDto.getAuthor())
                 .id(key)
                 .build());
-
-        return next;
+        return modelMapper.map(books.get(next), BookDto.class);
     }
 }
