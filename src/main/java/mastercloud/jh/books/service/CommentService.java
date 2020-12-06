@@ -12,8 +12,9 @@ public interface CommentService {
      * Delete the comment according to an id.
      *
      * @param id identification of the comment to delete.
+     * @return the deleted comment.
      */
-    void deleteComment(Long id);
+    CommentDto deleteComment(Long id);
 
     /**
      * Creates a new comment.

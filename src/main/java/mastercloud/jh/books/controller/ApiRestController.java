@@ -79,23 +79,23 @@ public class ApiRestController {
             @ApiResponse(responseCode = "404", description = "Book not found", content = {@Content(mediaType = APPLICATION_JSON,
                     schema = @Schema(implementation = CommentDto.class))})
     })
-    @DeleteMapping("/comment/{commentId}")
+    @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<CommentDto> delete(@Parameter(description = "Identification of the comment to be deleted")
                                           @PathVariable("commentId") Long commentId) {
-
+        CommentDto commentDto;
         try {
-            this.commentService.deleteComment(commentId);
+            commentDto = this.commentService.deleteComment(commentId);
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(commentDto);
     }
 
 
     @Operation(summary = "Creates a new comment with all the needed data ")
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Comment created ok",
             content = {@Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CommentDto.class))})})
-    @PostMapping("/comment")
+    @PostMapping("/comments")
     public ResponseEntity<CommentDto> createComment(@Valid @RequestBody CommentCreationDto commentCreationDto){
         CommentDto commentDto = this.commentService.createComment(commentCreationDto);
         return ResponseEntity.created(fromCurrentRequest().path("/comment").buildAndExpand(commentDto.getId()).toUri()).body(commentDto);

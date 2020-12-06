@@ -3,6 +3,7 @@ package mastercloud.jh.books.service;
 import mastercloud.jh.books.dto.BookCreationDto;
 import mastercloud.jh.books.dto.BookDto;
 import mastercloud.jh.books.dto.BookReducedDto;
+import mastercloud.jh.books.dto.CommentDto;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
@@ -31,4 +32,10 @@ public interface BookService {
      * @return the newly created book
      */
     BookDto createBook(@Validated BookCreationDto bookCreationDto);
+
+    /**
+     * Adds a comment to a book.
+     * @param commentDto comment to be stored related to a book
+     */
+    void addComment(CommentDto commentDto);
 }

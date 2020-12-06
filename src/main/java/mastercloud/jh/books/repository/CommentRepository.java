@@ -21,24 +21,25 @@ public class CommentRepository {
     }
 
     private void populate(){
-        Long id = this.nextId.incrementAndGet();
-        this.comments.put(id, Comment.builder()
-                .id(id)
+        Long commentId = this.nextId.incrementAndGet();
+        this.comments.put(commentId, Comment.builder()
+                .id(commentId)
                 .bookId(1L)
                 .author("Jaime")
                 .score(5)
                 .commentary("Este libro es magnífico, pero debería hacerse una nueva versión actualizada")
                 .build());
 
-        id = this.nextId.incrementAndGet();
-        this.comments.put(id, Comment.builder()
-                .id(id)
+        commentId = this.nextId.incrementAndGet();
+        this.comments.put(commentId, Comment.builder()
+                .id(commentId)
                 .bookId(1L)
                 .score(1)
                 .author("Juan")
                 .commentary("El UML no se usa")
                 .build());
     }
+
 
     public Comment delete(Long id){
         return this.comments.remove(id);

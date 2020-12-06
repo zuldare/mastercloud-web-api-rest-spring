@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Data
@@ -22,11 +21,9 @@ public class CommentCreationDto {
     private Integer score;
 
     @NotNull
-    @NotEmpty
     private String commentary;
 
     @NotNull
-    @NotEmpty
     private String author;
 
     @NotNull

@@ -1,9 +1,11 @@
 package mastercloud.jh.books.repository;
 
 import mastercloud.jh.books.model.Book;
+import mastercloud.jh.books.model.Comment;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -21,20 +23,22 @@ public class BookRepository {
     }
 
     private void populate() {
-        Long id = this.nextId.incrementAndGet();
-        this.books.put(id, Book.builder()
-                .id(id)
+        Long bookId = this.nextId.incrementAndGet();
+
+        this.books.put(bookId, Book.builder()
+                .id(bookId)
                 .author("Martin Fowler")
                 .publishingHouse("Addison")
                 .publishYear(2003)
                 .summary("Learn how to use UML")
                 .title("UML Distilled")
+                .comments(new ArrayList<>(createCommentsForBookId(bookId)))
                 .build()
                 );
 
-        id= this.nextId.incrementAndGet();
-        this.books.put(id, Book.builder()
-                .id(id)
+        bookId = this.nextId.incrementAndGet();
+        this.books.put(bookId, Book.builder()
+                .id(bookId)
                 .author("Erich Gamma")
                 .publishingHouse("Addison")
                 .publishYear(2002)
@@ -42,8 +46,23 @@ public class BookRepository {
                 .title("Design Patterns")
                 .build()
         );
+    }
 
-
+    private List<Comment> createCommentsForBookId(Long bookId) {
+        return Arrays.asList(Comment.builder()
+                    .id(1L)
+                    .bookId(bookId)
+                    .author("Jaime")
+                    .score(5)
+                    .commentary("Este libro es magnífico, pero debería hacerse una nueva versión actualizada")
+                    .build(),
+           Comment.builder()
+                    .id(2L)
+                    .bookId(bookId)
+                    .score(1)
+                    .author("Juan")
+                    .commentary("El UML no se usa")
+                    .build());
     }
 
     public List<Book> findAll(){

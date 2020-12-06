@@ -4,8 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import mastercloud.jh.books.dto.BookCreationDto;
 import mastercloud.jh.books.dto.BookDto;
 import mastercloud.jh.books.dto.BookReducedDto;
+import mastercloud.jh.books.dto.CommentDto;
 import mastercloud.jh.books.exception.NotFoundException;
 import mastercloud.jh.books.model.Book;
+import mastercloud.jh.books.model.Comment;
 import mastercloud.jh.books.repository.BookRepository;
 import mastercloud.jh.books.service.BookService;
 import org.modelmapper.ModelMapper;
@@ -68,4 +70,14 @@ public class BookServiceImpl implements BookService {
         Book newlyCreatedBook = this.bookRepository.save(modelMapper.map(bookCreationDto, Book.class));
         return modelMapper.map(newlyCreatedBook, BookDto.class);
     }
+
+    @Override
+    public void addComment(CommentDto commentDto) {
+        log.info("Adding comment: {} to book with id: {}", commentDto, commentDto.getBookId());
+        Book book = this.getCheckedBook(commentDto.getBookId());
+        book.getComments().add(modelMapper.map(commentDto, Comment.class));
+        this.bookRepository.save(book);
+    }
+
+
 }

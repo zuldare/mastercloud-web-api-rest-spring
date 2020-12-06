@@ -103,7 +103,6 @@
                 <configuration>
                     <apiDocsUrl>http://localhost:8080/api-docs</apiDocsUrl>
                     <outputFileName>books-openapi.json</outputFileName>
-                    <outputFileName>books-openapi.json</outputFileName>
                     <skip>false</skip>
                 </configuration>
             </plugin>
