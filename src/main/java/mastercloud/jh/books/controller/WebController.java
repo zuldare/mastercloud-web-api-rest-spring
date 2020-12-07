@@ -28,8 +28,7 @@ public class WebController {
     }
 
     @GetMapping("/web/books")
-    public String getBooks(Model model,  HttpSession session){
-        model.addAttribute("session", session.isNew());
+    public String getBooks(Model model){
         model.addAttribute("books", this.bookService.getBooks());
         model.addAttribute("userName", userSession.getUser());
 
@@ -40,6 +39,7 @@ public class WebController {
     public String getBook(Model model, @PathVariable("bookId") Long bookId){
         model.addAttribute("userName", userSession.getUser());
         model.addAttribute("book", this.bookService.getBook(bookId));
+        model.addAttribute("bookId", bookId);
         return "particular_book_template";
     }
 
@@ -54,11 +54,10 @@ public class WebController {
                                    CommentCreationDto commentCreationDto){
 
         userSession.setUser(commentCreationDto.getAuthor());
-        model.addAttribute("userName", userSession.getUser());
+        model.addAttribute("userName", commentCreationDto.getAuthor());
 
         commentCreationDto.setBookId(bookId);
-        CommentDto commentDto = this.commentService.createComment(commentCreationDto);
-        this.bookService.addComment(commentDto);
+        this.commentService.createComment(commentCreationDto);
 
         return this.getBook(model, bookId);
     }

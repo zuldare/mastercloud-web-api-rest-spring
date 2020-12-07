@@ -32,6 +32,7 @@ public class CommentServiceImpl implements CommentService {
     public CommentDto deleteComment(Long id) {
         log.info("Deleting comment with id: {}", id);
         Comment comment = getCheckedComment(id);
+        this.bookService.deleteComment(modelMapper.map(comment, CommentDto.class));
         this.commentRepository.delete(id);
         return modelMapper.map(comment, CommentDto.class);
     }
@@ -48,7 +49,6 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentDto createComment(CommentCreationDto commentCreationDto){
         log.info("Create new comment: {}", commentCreationDto);
-
         log.info("Getting book with id: {} ", commentCreationDto.getBookId());
 
         Comment newlyCreatedComment = this.commentRepository.save(modelMapper.map(commentCreationDto, Comment.class));

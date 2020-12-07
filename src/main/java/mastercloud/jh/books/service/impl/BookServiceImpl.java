@@ -13,6 +13,7 @@ import mastercloud.jh.books.service.BookService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,8 +76,17 @@ public class BookServiceImpl implements BookService {
     public void addComment(CommentDto commentDto) {
         log.info("Adding comment: {} to book with id: {}", commentDto, commentDto.getBookId());
         Book book = this.getCheckedBook(commentDto.getBookId());
+        if (isNull(book.getComments())){
+            book.setComments(new ArrayList<>());
+        }
         book.getComments().add(modelMapper.map(commentDto, Comment.class));
-        this.bookRepository.save(book);
+    }
+
+    @Override
+    public void deleteComment(CommentDto commentDto){
+        log.info("Deleting comment: {} from book with id: {}", commentDto, commentDto.getBookId());
+        Book book = this.getCheckedBook(commentDto.getBookId());
+        book.getComments().remove(modelMapper.map(commentDto, Comment.class));
     }
 
 

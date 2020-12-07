@@ -49,8 +49,7 @@
                 </tr>
                 <tr>
                     <th colspan="2" align="left">
-                        {{id}}
-                        <a href="/web/book/{{#book}}{{id}}{{/book}}/comments/{{id}}">Borrar</a></th>
+                        <a href="/web/book/{{bookId}}/comments/{{id}}">Borrar</a></th>
                 </tr>
             </table>
             <br/>
@@ -66,7 +65,14 @@
                 <td><label for="authorId">Autor:</label>
                     {{userName}}
                 </td>
-                <td><input type="text" id="authorId" name="author" value="{{#userName}}{{.}}{{/userName}}"/></td>
+
+                {{#userName}}
+                  <td><input type="text" id="authorId" name="author" value="{{userName}}"/></td>
+                {{/userName}}
+
+                {{^userName}}
+                <td><input type="text" id="authorId" name="author" value=""/></td>
+                {{/userName}}
             </tr>
             <tr>
                 <td><label for="scoreId">Puntuaci&oacute;n</label></td>
@@ -83,8 +89,7 @@
             <tr>
                 <td><label for="commentId">Comentario:</label></td>
                 <td>
-                    <textarea id="commentId" name="commentary" rows="4" cols="30"
-                              placeholder="Introduzca aqu&iacute; su comentario" >
+                    <textarea id="commentId" name="commentary" rows="4" cols="30" value="">
                     </textarea>
                 </td>
             </tr>

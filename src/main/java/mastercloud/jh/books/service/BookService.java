@@ -38,4 +38,10 @@ public interface BookService {
      * @param commentDto comment to be stored related to a book
      */
     void addComment(CommentDto commentDto);
+
+    /**
+     * Deletes a comment from a book.
+     * @param commentDto comment to be deleted.
+     */
+    void deleteComment(CommentDto commentDto);
 }
