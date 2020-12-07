@@ -28,11 +28,11 @@
 
     <h1>Comentarios</h1>
     <section>
-        {{^comments}}
+        {{^book.comments}}
             <p>AÚN NO HAY COMENTARIOS</p>
-        {{/comments}}
+        {{/book.comments}}
 
-        {{#comments}}
+        {{#book.comments}}
             <p>COMENTARIO</p>
             <table>
                 <tr>
@@ -48,12 +48,50 @@
                     <td>{{commentary}}</td>
                 </tr>
                 <tr>
-                    <th colspan="2" align="left"><a href="#">Borrar</a></th>
+                    <th colspan="2" align="left">
+                        {{id}}
+                        <a href="/web/book/{{#book}}{{id}}{{/book}}/comments/{{id}}">Borrar</a></th>
                 </tr>
             </table>
             <br/>
-        {{/comments}}
+        {{/book.comments}}
     </section>
+
+    <h2>Añadir comentario</h2>
+    <form method="post" action="/web/books/{{book.id}}/comments">
+        <p>Rellene los siguientes campos:</p>
+
+        <table>
+            <tr>
+                <td><label for="authorId">Autor:</label>
+                    {{userName}}
+                </td>
+                <td><input type="text" id="authorId" name="author" value="{{#userName}}{{.}}{{/userName}}"/></td>
+            </tr>
+            <tr>
+                <td><label for="scoreId">Puntuaci&oacute;n</label></td>
+                <td>
+                    <select id="scoreId" name="score" >
+                        <option value="1" selected>1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="commentId">Comentario:</label></td>
+                <td>
+                    <textarea id="commentId" name="commentary" rows="4" cols="30"
+                              placeholder="Introduzca aqu&iacute; su comentario" >
+                    </textarea>
+                </td>
+            </tr>
+        </table>
+
+        <input type="submit" value="Guardar"/>
+    </form>
 {{/book}}
 
 <br/>
