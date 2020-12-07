@@ -1,19 +1,26 @@
 {{>header}}
+    <section>
         <p>Bienvenido a Books. La web donde podrás conocer la opinión de la gente sobre libros.</p>
-        <p>El listado de libros que existe actualmente es: </p>
+    </section>
 
+    <section>
+        <p>El listado de libros que existe actualmente es: </p>
         <table>
             <tr>
                 <th>Id</th>
-                <th>Título</th>
+                <th>T&iacute;tulo</th>
             </tr>
             {{#books}}
             <tr>
                 <td>{{id}}</td>
-                <td>{{title}}</td>
-                <!-- <a href="post/{{id}}">{{user}} {{title}}</a><br>
+                <td><a href="/web/books/{{id}}">{{title}}</a></td>
             </tr>
             {{/books}}
         </table>
+    </section>
+
+    <section>
+        <a href="/web/books/form">A&ntilde;adir libro</a>
+    </section>
 
 {{>footer}}

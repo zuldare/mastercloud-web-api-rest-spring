@@ -1,0 +1,61 @@
+{{>header}}
+
+{{#book}}
+    <h1>Informaci&oacute;n libro</h1>
+    <table>
+        <tr>
+            <th>T&iacute;tulo:</th>
+            <td>{{title}}</td>
+        </tr>
+        <tr>
+            <th>Autor:</th>
+            <td>{{author}}</td>
+        </tr>
+        <tr>
+            <th>Resumen:</th>
+            <td>{{summary}}</td>
+        </tr>
+        <tr>
+            <th>Editorial:</th>
+            <td>{{publishingHouse}}</td>
+        </tr>
+        <tr>
+            <th>A&ntilde;o publicaci&oacute;n:</th>
+            <td>{{publishYear}}</td>
+        </tr>
+    </table>
+    <br/>
+
+    <h1>Comentarios</h1>
+    <section>
+        {{^comments}}
+            <p>AÚN NO HAY COMENTARIOS</p>
+        {{/comments}}
+
+        {{#comments}}
+            <p>COMENTARIO</p>
+            <table>
+                <tr>
+                    <th>Autor:</th>
+                    <td>{{author}}</td>
+                </tr>
+                <tr>
+                    <th>Puntuaci&oacute;n:</th>
+                    <td>{{score}}</td>
+                </tr>
+                <tr>
+                    <th>Comentario:</th>
+                    <td>{{commentary}}</td>
+                </tr>
+                <tr>
+                    <th colspan="2" align="left"><a href="#">Borrar</a></th>
+                </tr>
+            </table>
+            <br/>
+        {{/comments}}
+    </section>
+{{/book}}
+
+<br/>
+<a href="/web/books">Back</a>
+{{>footer}}
