@@ -3,7 +3,31 @@
     <section>
         <p>Introduzca los datos del nuevo libro, por favor.</p>
     </section>
-
+        <form method="post" action="/web/books">
+            <table>
+                <tr>
+                    <th>T&iacute;tulo:</th>
+                    <td><input type="text" name="title" value=""/></td>
+                </tr>
+                <tr>
+                    <th>Autor:</th>
+                    <td><input type="text" name="author" value=""/></td>
+                </tr>
+                <tr>
+                    <th>Resumen:</th>
+                    <td><textarea type="text" name="summary" value="" cols="30" rows="4"></textarea></td>
+                </tr>
+                <tr>
+                    <th>Editorial:</th>
+                    <td><input type="text" name="publishingHouse" value=""/></td>
+                </tr>
+                <tr>
+                    <th>A&ntilde;o publicaci&oacute;n:</th>
+                    <td><input type="text" name="publishYear" value=""/></td>
+                </tr>
+            </table>
+            <input type="submit" value="Guardar"/>
+        </form>
 <br/><br/>
 <a href="/web/books">Back</a>
 

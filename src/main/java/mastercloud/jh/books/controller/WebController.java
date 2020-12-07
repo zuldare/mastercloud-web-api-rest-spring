@@ -1,5 +1,6 @@
 package mastercloud.jh.books.controller;
 
+import mastercloud.jh.books.dto.BookCreationDto;
 import mastercloud.jh.books.dto.CommentCreationDto;
 import mastercloud.jh.books.dto.CommentDto;
 import mastercloud.jh.books.service.BookService;
@@ -33,6 +34,13 @@ public class WebController {
         model.addAttribute("userName", userSession.getUser());
 
         return "initial_template";
+    }
+
+    @PostMapping("/web/books")
+    public String createNewBook(Model model, BookCreationDto bookCreationDto){
+        model.addAttribute("userName", userSession.getUser());
+        this.bookService.createBook(bookCreationDto);
+        return this.getBooks(model);
     }
 
     @GetMapping("/web/books/{bookId}")
