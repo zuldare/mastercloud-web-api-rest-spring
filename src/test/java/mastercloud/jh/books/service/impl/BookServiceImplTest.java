@@ -3,7 +3,7 @@ package mastercloud.jh.books.service.impl;
 import mastercloud.jh.books.dto.BookCreationDto;
 import mastercloud.jh.books.dto.BookDto;
 import mastercloud.jh.books.dto.BookReducedDto;
-import mastercloud.jh.books.exception.NotFoundException;
+import mastercloud.jh.books.exception.BookNotFoundException;
 import mastercloud.jh.books.model.Book;
 import mastercloud.jh.books.repository.BookRepository;
 import mastercloud.jh.books.service.BookService;
@@ -44,7 +44,7 @@ class BookServiceImplTest {
 
     @Test
     void getBookById_WhenNotExist_ShouldReturnNotFoundException(){
-        assertThrows(NotFoundException.class, () -> this.bookService.getBook(5L));
+        assertThrows(BookNotFoundException.class, () -> this.bookService.getBook(5L));
     }
 
     @Test

@@ -5,7 +5,7 @@ import mastercloud.jh.books.dto.BookCreationDto;
 import mastercloud.jh.books.dto.BookDto;
 import mastercloud.jh.books.dto.BookReducedDto;
 import mastercloud.jh.books.dto.CommentDto;
-import mastercloud.jh.books.exception.NotFoundException;
+import mastercloud.jh.books.exception.BookNotFoundException;
 import mastercloud.jh.books.model.Book;
 import mastercloud.jh.books.model.Comment;
 import mastercloud.jh.books.repository.BookRepository;
@@ -60,7 +60,7 @@ public class BookServiceImpl implements BookService {
         Book book = this.bookRepository.find(id);
         if (isNull(book)) {
             log.info("No user with id: {} have been found", id);
-            throw new NotFoundException("Book with id: " + id + " not found");
+            throw new BookNotFoundException("Book with id: " + id + " not found");
         }
         return book;
     }

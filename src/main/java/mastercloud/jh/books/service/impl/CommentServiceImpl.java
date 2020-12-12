@@ -3,7 +3,7 @@ package mastercloud.jh.books.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import mastercloud.jh.books.dto.CommentCreationDto;
 import mastercloud.jh.books.dto.CommentDto;
-import mastercloud.jh.books.exception.NotFoundException;
+import mastercloud.jh.books.exception.BookNotFoundException;
 import mastercloud.jh.books.model.Comment;
 import mastercloud.jh.books.repository.CommentRepository;
 import mastercloud.jh.books.service.BookService;
@@ -41,7 +41,7 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = this.commentRepository.findById(id);
         if (isNull(comment)){
             log.error("Comment with id: {} was not found", id);
-            throw new NotFoundException(String.format("Comment with id: %d was not found", id));
+            throw new BookNotFoundException(String.format("Comment with id: %d was not found", id));
         }
         return comment;
     }
