@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import mastercloud.jh.books.dto.users.UserCreationModificationDto;
 import mastercloud.jh.books.dto.users.UserDto;
 import mastercloud.jh.books.exception.UserHasCommentsException;
+import mastercloud.jh.books.exception.UserNickAlreadyExistsException;
 import mastercloud.jh.books.exception.UserNotFoundException;
 import mastercloud.jh.books.model.User;
 import mastercloud.jh.books.repository.UserRepository;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -30,22 +32,34 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateUser(Long userId, UserCreationModificationDto userCreationModificationDto) {
         log.info("Updating user with userId: {} with: {}", userId, userCreationModificationDto);
-        User user = getUpdatedUser(userCreationModificationDto);
-        log.info("Saved user was: {}", user);
-        return modelMapper.map(user, UserDto.class);
+        User userById = this.userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        checkIfNickAlreadyExists(userId, userCreationModificationDto.getNick());
+
+        userById.setEmail(userCreationModificationDto.getEmail());
+        userById.setNick(userCreationModificationDto.getNick());
+        userById = this.userRepository.save(userById);
+
+        log.info("Saved user was: {}", userById);
+        return modelMapper.map(userById, UserDto.class);
     }
 
-    private User getUpdatedUser(UserCreationModificationDto userCreationModificationDto) {
-        User user = this.userRepository.save(modelMapper.map(userCreationModificationDto, User.class));
-        user.setNick(userCreationModificationDto.getNick());
-        user.setEmail(userCreationModificationDto.getEmail());
-        user = this.userRepository.save(user);
-        return user;
+    private void checkIfNickAlreadyExists(Long userId, String nick){
+        Optional<User> userOptional = this.userRepository.findByNick(nick);
+        if (userOptional.isPresent() && userOptional.get().getId().longValue() != userId.longValue()){
+            log.error("Another user with nick: {} exists", nick);
+            throw new UserNickAlreadyExistsException();
+        }
     }
 
     @Override
     public UserDto createUser(UserCreationModificationDto userCreationModificationDto) {
         log.info("Create user from: {}", userCreationModificationDto);
+
+        if (this.userRepository.existsByNick(userCreationModificationDto.getNick())){
+            log.error("Another user with nick: {} exists", userCreationModificationDto.getNick());
+            throw new UserNickAlreadyExistsException();
+        }
+
         User user = this.userRepository.save(modelMapper.map(userCreationModificationDto, User.class));
         log.info("User created was: {}", user);
         return modelMapper.map(user, UserDto.class);
@@ -56,7 +70,7 @@ public class UserServiceImpl implements UserService {
         log.info("Deleting user with id: {}", userId);
         User user = this.userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
-        if (CollectionUtils.isEmpty(user.getComments())) {
+        if (!CollectionUtils.isEmpty(user.getComments())) {
             log.info("User with id: {} has comments therefore it can not be deleted", userId);
             throw new UserHasCommentsException();
         }

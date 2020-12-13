@@ -33,7 +33,7 @@ public interface ApiRestControllerInterface {
     List<BookReducedDto> getBooks();
 
 
-    @Operation(summary = "Get a reduced information (id, title) of all books")
+    @Operation(summary = "Get a all the comments of a book")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Comments found", content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = CommentDto.class)))),
             @ApiResponse(responseCode = "404", description = "Book not found")})
@@ -102,7 +102,7 @@ public interface ApiRestControllerInterface {
             @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
     })
     @DeleteMapping("/users/{userId}")
-    UserDto deleteUser(@Parameter(description = "Identification of the comment to be deleted") @PathVariable("commentId") Long commentId);
+    UserDto deleteUser(@Parameter(description = "Identification of the comment to be deleted") @PathVariable("userId") Long commentId);
 
 
     @Operation(summary = "Creates a new user with all the needed data ")
@@ -110,7 +110,9 @@ public interface ApiRestControllerInterface {
             required = true,
             content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = UserCreationModificationDto.class)))
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "User created ok",
-            content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = UserDto.class)))})
+            content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = UserDto.class))),
+            @ApiResponse(responseCode = "500", description = "User nick already exists", content = @Content)
+    })
     @PostMapping("/users")
     UserDto createUser(@Valid @RequestBody UserCreationModificationDto userCreationModificationDto);
 
@@ -119,7 +121,8 @@ public interface ApiRestControllerInterface {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User updated ok", content = @Content(mediaType = APPLICATION_JSON,
                     schema = @Schema(implementation = UserDto.class))),
-            @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content),
+            @ApiResponse(responseCode = "500", description = "User nick already exists", content = @Content)
     })
     @PatchMapping("/users/{userId}")
     UserDto updateUser(@Parameter(description = "id of the user to be updated") @PathVariable("userId") Long userId, @Valid @RequestBody UserCreationModificationDto userCreationModificationDto);
