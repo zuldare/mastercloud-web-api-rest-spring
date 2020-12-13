@@ -1,4 +1,4 @@
-package mastercloud.jh.books.dto;
+package mastercloud.jh.books.dto.comments;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,8 +24,8 @@ public class CommentCreationDto {
     private String commentary;
 
     @NotNull
-    private String author;
+    private Long bookId;
 
     @NotNull
-    private Long bookId;
+    private String nick;
 }

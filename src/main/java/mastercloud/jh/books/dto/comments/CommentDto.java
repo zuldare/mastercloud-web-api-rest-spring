@@ -1,4 +1,4 @@
-package mastercloud.jh.books.dto;
+package mastercloud.jh.books.dto.comments;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +13,6 @@ public class CommentDto {
     private Long id;
     private Integer score;
     private String commentary;
-    private String author;
+    private Long userId;
     private Long bookId;
 }

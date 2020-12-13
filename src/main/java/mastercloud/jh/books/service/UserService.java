@@ -1,7 +1,7 @@
 package mastercloud.jh.books.service;
 
-import mastercloud.jh.books.dto.UserCreationModificationDto;
-import mastercloud.jh.books.dto.UserDto;
+import mastercloud.jh.books.dto.users.UserCreationModificationDto;
+import mastercloud.jh.books.dto.users.UserDto;
 
 import java.util.List;
 

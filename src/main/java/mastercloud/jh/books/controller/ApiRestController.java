@@ -1,10 +1,17 @@
 package mastercloud.jh.books.controller;
 
-import mastercloud.jh.books.dto.*;
+import mastercloud.jh.books.dto.books.BookCreationDto;
+import mastercloud.jh.books.dto.books.BookDto;
+import mastercloud.jh.books.dto.books.BookReducedDto;
+import mastercloud.jh.books.dto.books.BookWithCommentsDto;
+import mastercloud.jh.books.dto.comments.CommentCreationDto;
+import mastercloud.jh.books.dto.comments.CommentDto;
+import mastercloud.jh.books.dto.users.UserCreationModificationDto;
+import mastercloud.jh.books.dto.users.UserDto;
 import mastercloud.jh.books.service.BookService;
-import mastercloud.jh.books.service.CommentService;
 import mastercloud.jh.books.service.UserService;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -15,12 +22,10 @@ import java.util.List;
 public class ApiRestController implements ApiRestControllerInterface {
 
     private final BookService bookService;
-    private final CommentService commentService;
     private final UserService userService;
 
-    public ApiRestController(BookService bookService, CommentService commentService, UserService userService) {
+    public ApiRestController(BookService bookService, UserService userService) {
         this.bookService = bookService;
-        this.commentService = commentService;
         this.userService = userService;
     }
 
@@ -30,8 +35,8 @@ public class ApiRestController implements ApiRestControllerInterface {
     }
 
     @Override
-    public BookDto getBook(Long bookId) {
-       return this.bookService.getBook(bookId);
+    public BookWithCommentsDto getBook(Long bookId) {
+        return this.bookService.getBook(bookId);
     }
 
     @Override
@@ -41,17 +46,22 @@ public class ApiRestController implements ApiRestControllerInterface {
 
     @Override
     public CommentDto deleteComment(Long commentId) {
-        return this.commentService.deleteComment(commentId);
+        return this.bookService.deleteComment(commentId);
     }
 
     @Override
-    public CommentDto createComment(CommentCreationDto commentCreationDto){
-        return this.commentService.createComment(commentCreationDto);
+    public CommentDto createComment(CommentCreationDto commentCreationDto) {
+        return this.bookService.createComment(commentCreationDto);
     }
 
     @Override
     public List<UserDto> getUsers() {
         return this.userService.getUsers();
+    }
+
+    @Override
+    public List<CommentDto> getBooksComment(Long bookId) {
+        return this.bookService.getBooksComment(bookId);
     }
 
     @Override

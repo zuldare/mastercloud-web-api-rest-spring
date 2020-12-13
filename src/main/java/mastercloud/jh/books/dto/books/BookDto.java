@@ -1,35 +1,23 @@
-package mastercloud.jh.books.dto;
+package mastercloud.jh.books.dto.books;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import mastercloud.jh.books.dto.comments.CommentDto;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookCreationDto {
-
-    @NotNull
+public class BookDto {
+    private Long id;
     private String title;
-
-    @NotNull
     private String author;
-
-    @NotNull
     private String summary;
-
-    @NotNull
     private String publishingHouse;
-
-    @NotNull
-    @Max(2099)
-    @Min(0)
     private Integer publishYear;
-
+    private List<CommentDto> comments;
 }

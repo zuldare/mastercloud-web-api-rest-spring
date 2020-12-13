@@ -1,18 +1,15 @@
 package mastercloud.jh.books.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
 @Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(schema="books", name = "comments")
+@Table(schema = "books", name = "comments")
 public class Comment {
 
     @Id
@@ -25,10 +22,12 @@ public class Comment {
     @Column
     private String commentary;
 
-    @Column
-    private String author;
+    @ToString.Exclude
+    @ManyToOne
+    private User user;
 
-    @Transient
-    private Long bookId;
+    @ToString.Exclude
+    @ManyToOne
+    private Book book;
 
 }

@@ -13,28 +13,28 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(schema="books", name="books")
+@Table(schema = "books", name = "books")
 public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String title;
 
-    @Column
+    @Column(nullable = false)
     private String author;
 
-    @Column
+    @Column(nullable = false)
     private String summary;
 
-    @Column(name = "publishing_house")
+    @Column(name = "publishing_house", nullable = false)
     private String publishingHouse;
 
-    @Column(name = "publish_year")
+    @Column(name = "publish_year", nullable = false)
     private Integer publishYear;
 
-    @Transient
+    @OneToMany(mappedBy = "book")
     private List<Comment> comments;
 }

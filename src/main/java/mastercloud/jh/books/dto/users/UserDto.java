@@ -1,4 +1,4 @@
-package mastercloud.jh.books.dto;
+package mastercloud.jh.books.dto.users;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

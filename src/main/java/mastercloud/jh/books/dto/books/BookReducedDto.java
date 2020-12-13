@@ -1,4 +1,4 @@
-package mastercloud.jh.books.dto;
+package mastercloud.jh.books.dto.books;
 
 import lombok.Builder;
 import lombok.Data;

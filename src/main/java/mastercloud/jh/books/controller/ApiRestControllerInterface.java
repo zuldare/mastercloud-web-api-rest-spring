@@ -7,7 +7,14 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import mastercloud.jh.books.dto.*;
+import mastercloud.jh.books.dto.books.BookCreationDto;
+import mastercloud.jh.books.dto.books.BookDto;
+import mastercloud.jh.books.dto.books.BookReducedDto;
+import mastercloud.jh.books.dto.books.BookWithCommentsDto;
+import mastercloud.jh.books.dto.comments.CommentCreationDto;
+import mastercloud.jh.books.dto.comments.CommentDto;
+import mastercloud.jh.books.dto.users.UserCreationModificationDto;
+import mastercloud.jh.books.dto.users.UserDto;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -26,12 +33,20 @@ public interface ApiRestControllerInterface {
     List<BookReducedDto> getBooks();
 
 
+    @Operation(summary = "Get a reduced information (id, title) of all books")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Comments found", content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = CommentDto.class)))),
+            @ApiResponse(responseCode = "404", description = "Book not found")})
+    @GetMapping("/books/{bookId}/comments")
+    List<CommentDto> getBooksComment(@Parameter(description = "id of the book to be searched") @PathVariable("bookId") Long bookId);
+
+
     @Operation(summary = "Get a particular book with the full information of it")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Book found", content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = BookDto.class))),
+            @ApiResponse(responseCode = "200", description = "Book found", content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = BookWithCommentsDto.class))),
             @ApiResponse(responseCode = "404", description = "Book not found")})
     @GetMapping("/books/{bookId}")
-    BookDto getBook(@Parameter(description = "id of the book to be searched") @PathVariable("bookId") Long bookId);
+    BookWithCommentsDto getBook(@Parameter(description = "id of the book to be searched") @PathVariable("bookId") Long bookId);
 
 
     @Operation(summary = "Creates a new book with all the needed ")
@@ -49,7 +64,7 @@ public interface ApiRestControllerInterface {
     })
     @DeleteMapping("/comments/{commentId}")
     CommentDto deleteComment(@Parameter(description = "Identification of the comment to be deleted")
-                                             @PathVariable("commentId") Long commentId);
+                             @PathVariable("commentId") Long commentId);
 
 
     @Operation(summary = "Creates a new comment with all the needed data ")
@@ -59,6 +74,7 @@ public interface ApiRestControllerInterface {
             content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CommentDto.class)))})
     @PostMapping("/comments")
     CommentDto createComment(@Valid @RequestBody CommentCreationDto commentCreationDto);
+
 
     @Operation(summary = "Get information of all users")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Users founds",
@@ -76,6 +92,7 @@ public interface ApiRestControllerInterface {
 
     @GetMapping("/users/{userId}")
     UserDto getUser(@Parameter(description = "id of the user to be searched") @PathVariable("userId") Long userId);
+
 
     @Operation(summary = "Deletes a user according to an id, this user can not be deleted if has comments")
     @ApiResponses(value = {
@@ -105,5 +122,5 @@ public interface ApiRestControllerInterface {
             @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
     })
     @PatchMapping("/users/{userId}")
-    UserDto updateUser(@Parameter(description = "id of the user to be updated") @PathVariable("userId")Long userId, @Valid @RequestBody UserCreationModificationDto userCreationModificationDto);
+    UserDto updateUser(@Parameter(description = "id of the user to be updated") @PathVariable("userId") Long userId, @Valid @RequestBody UserCreationModificationDto userCreationModificationDto);
 }

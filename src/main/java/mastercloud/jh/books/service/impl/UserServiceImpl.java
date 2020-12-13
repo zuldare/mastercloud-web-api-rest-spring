@@ -1,8 +1,9 @@
 package mastercloud.jh.books.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import mastercloud.jh.books.dto.UserCreationModificationDto;
-import mastercloud.jh.books.dto.UserDto;
+import mastercloud.jh.books.dto.users.UserCreationModificationDto;
+import mastercloud.jh.books.dto.users.UserDto;
+import mastercloud.jh.books.exception.UserHasCommentsException;
 import mastercloud.jh.books.exception.UserNotFoundException;
 import mastercloud.jh.books.model.User;
 import mastercloud.jh.books.repository.UserRepository;
@@ -10,6 +11,7 @@ import mastercloud.jh.books.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -53,6 +55,12 @@ public class UserServiceImpl implements UserService {
     public UserDto deleteUser(Long userId) {
         log.info("Deleting user with id: {}", userId);
         User user = this.userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+
+        if (CollectionUtils.isEmpty(user.getComments())) {
+            log.info("User with id: {} has comments therefore it can not be deleted", userId);
+            throw new UserHasCommentsException();
+        }
+
         this.userRepository.delete(user);
         return modelMapper.map(user, UserDto.class);
     }
@@ -68,8 +76,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> getUsers() {
         log.info("Getting all users");
-        List<UserDto> userDtos = modelMapper.map(this.userRepository.findAll(), new TypeToken<List<UserDto>>(){}.getType());
+        List<UserDto> userDtos = modelMapper.map(this.userRepository.findAll(), new TypeToken<List<UserDto>>() {
+        }.getType());
         log.info("Returned users where {}", userDtos);
         return userDtos;
     }
+
+
 }
